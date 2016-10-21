@@ -1,23 +1,25 @@
 const request = require('request');
 
-var getWeather = (latitude, longitude, callback) => {
+var getWeather = (lat, lng, callback) => {
   const apiKey = '334bd309c030f89e8fa97201b40e8959';
-  console.log(latitude, longitude);
+  const url = `https://api.darksky.net/forecast/${apiKey}/${lat},${lng}`;
+
   request({
-      url: `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}`,
+      url: url,
       json: true
   }, (error, response, body) => {
     if (error) {
-      console.log('Unable to connect to Dark Sky servers.');
-    } else if (response.statusCode === 400 || 404) {
+      callback('Unable to connect to Dark Sky servers.');
+    } else if (response.statusCode === 400) {
       callback('Unable to fetch weather.');
-    } else if (response.statusCode === 200){
+    } else if (response.statusCode === 200) {
       callback(undefined, {
-        currentTemp: body.currently.temperature
+        temperature: body.currently.temperature,
+        apparentTemperature: body.currently.apparentTemperature
       });
     }
   });
 };
 
 
-module.exports = {getWeather};
+module.exports.getWeather = getWeather;

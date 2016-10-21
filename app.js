@@ -11,26 +11,22 @@ const argv = yargs
       describe: 'Address to fetch weather for',
       string: true
     }
-})
+  })
   .help()
   .alias('help', 'h')
   .argv;
 
-// geocode.geocodeAddress(argv.address, (errorMessage, results) => {
-//   if (errorMessage) {
-//     console.log(errorMessage);
-//   } else {
-//     console.log(JSON.stringify(results, undefined, 2));
-//   }
-// });
-
-var lat = 45.5620183;
-var lng = -122.6365569;
-
-weather.getWeather(lat, lng, (errorMessage, results) => {
+geocode.geocodeAddress(argv.address, (errorMessage, results) => {
   if (errorMessage) {
     console.log(errorMessage);
   } else {
-    console.log(JSON.stringify(results, undefined, 2));
+    console.log(results.address);
+    weather.getWeather(results.lat, results.lng, (errorMessage, weatherResults) => {
+      if (errorMessage) {
+        console.log(errorMessage);
+      } else {
+        console.log(`It's currently ${weatherResults.temperature}. It feels like ${weatherResults.apparentTemperature}.`);
+      }
+    });
   }
-});;
+});
